@@ -20,3 +20,5 @@ threadpoolctl
 tqdm
 tzdata
 pyyaml
+nbstripout
+seaborn
