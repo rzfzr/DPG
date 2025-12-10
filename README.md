@@ -64,10 +64,10 @@ pip install git+https://github.com/LeonardoArrighi/DPG.git
 1- For Windows Users:
   ```bash
   # Create a virtual environment
-  python -m venv dpg_env
+  python -m venv .venv
 
   # Activate the virtual environment
-  dpg_env\Scripts\activate
+  .venv\Scripts\activate
 
   # If you get execution policy errors, run this first in PowerShell as Administrator:
   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -78,10 +78,10 @@ pip install git+https://github.com/LeonardoArrighi/DPG.git
 2- For Linux/Mac Users:
   ```bash
   # Create a virtual environment
-  python -m venv dpg_env
+  python -m venv .venv
 
   # Activate the virtual environment
-  source dpg_env/bin/activate
+  source .venv/bin/activate
 
   # Install DPG
   pip install -e .
