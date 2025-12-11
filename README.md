@@ -73,7 +73,7 @@ pip install git+https://github.com/LeonardoArrighi/DPG.git
   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
   # Then install DPG
-  pip install -e .
+  pip install -r ./requirements.txt
   ```
 2- For Linux/Mac Users:
   ```bash
@@ -84,7 +84,7 @@ pip install git+https://github.com/LeonardoArrighi/DPG.git
   source .venv/bin/activate
 
   # Install DPG
-  pip install -e .
+  pip install -r ./requirements.txt
   ```
 3- Deactivating the Virtual Environment:
   When you're done working with DPG, you can deactivate the virtual environment:
