@@ -217,32 +217,22 @@ class DecisionPredicateGraph:
         Returns:
             Dict[tuple, int]: Edge frequencies as {(source, target): count}
         """
-        def process_chunk(chunk):
-            """Process a subset of cases in parallel"""
-            chunk_dfg = {}
-            for case in tqdm(chunk, desc="Processing cases", leave=False):
-                trace_df = log[log["case:concept:name"] == case].copy()
-                trace_df.sort_values(by="case:concept:name", inplace=True)
-                for i in range(len(trace_df) - 1):
-                    key = (trace_df.iloc[i, 1], trace_df.iloc[i + 1, 1])
-                    chunk_dfg[key] = chunk_dfg.get(key, 0) + 1
-            return chunk_dfg
-
         cases = log["case:concept:name"].unique()
         if len(cases) == 0:
             raise Exception("There is no paths with the current value of perc_var and decimal_threshold!")
 
-        if self.n_jobs == -1:
-            self.n_jobs = os.cpu_count()
-
-        chunk_size = max(len(cases) // self.n_jobs, 1)
-        chunks = [cases[i:i + chunk_size] for i in range(0, len(cases), chunk_size)]
-        results = Parallel(n_jobs=self.n_jobs)(delayed(process_chunk)(chunk) for chunk in chunks)
-
+        # Optimized: Group by case once, then process each group
+        # This avoids repeated filtering of the dataframe for each case
         dfg = {}
-        for result in results:
-            for key, value in result.items():
-                dfg[key] = dfg.get(key, 0) + value
+        grouped = log.groupby("case:concept:name", sort=False)
+        
+        for case, trace_df in tqdm(grouped, desc="Processing cases", total=len(cases)):
+            trace_df = trace_df.sort_values(by="case:concept:name")
+            concepts = trace_df["concept:name"].values
+            for i in range(len(concepts) - 1):
+                key = (concepts[i], concepts[i + 1])
+                dfg[key] = dfg.get(key, 0) + 1
+        
         return dfg
 
     def generate_dot(self, dfg):
