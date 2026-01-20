@@ -15,6 +15,13 @@ from joblib import Parallel, delayed
 from typing import List, Dict, Union
 from sklearn.base import is_classifier, is_regressor
 
+# Handle OmegaConf DictConfig if available
+try:
+    from omegaconf import DictConfig, OmegaConf
+    HAS_OMEGACONF = True
+except ImportError:
+    HAS_OMEGACONF = False
+
 from sklearn.ensemble import (AdaBoostRegressor, RandomForestRegressor, ExtraTreesRegressor)
 
 class DPGError(Exception):
@@ -51,6 +58,13 @@ class DecisionPredicateGraph:
         else:
             with open(config_file) as f:
                 config = yaml.safe_load(f)
+        
+        # Convert OmegaConf DictConfig to regular dict if needed
+        if HAS_OMEGACONF and isinstance(config, DictConfig):
+            config = OmegaConf.to_container(config, resolve=True)
+        # Handle dict-like objects that have to_dict() method (like custom DictConfig)
+        elif hasattr(config, 'to_dict'):
+            config = config.to_dict()
         
         # Input validation
         if not hasattr(model, 'estimators_'):
