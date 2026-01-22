@@ -98,6 +98,7 @@ class DecisionPredicateGraph:
         if self.n_jobs is None:
             raise DPGError("n_jobs not found in DPG config")
         
+        print(f"DPG initialized with perc_var={self.perc_var}, decimal_threshold={self.decimal_threshold}, n_jobs={self.n_jobs}")
         # Store visualization config for use by utils
         self.visualization_config = dpg_config_section.get('visualization', {})
 
