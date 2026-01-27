@@ -265,7 +265,8 @@ def plot_dpg_constraints_overview(
     title: str = "DPG Constraints Overview",
     original_sample: Dict = None,
     original_class: int = None,
-    target_class: int = None
+    target_class: int = None,
+    constraint_score: float = None
 ) -> plt.Figure:
     """Create a horizontal bar chart showing DPG constraints for all features.
 
@@ -510,6 +511,8 @@ def plot_dpg_constraints_overview(
     # Add statistics subtitle
     n_non_overlap = len(non_overlapping_features)
     subtitle = f"Features: {n_features} | Non-overlapping: {n_non_overlap} | Classes: {n_classes}"
+    if constraint_score is not None:
+        subtitle += f" | Constraint Score: {constraint_score:.4f}"
     fig.text(0.5, 0.01, subtitle, ha='center', fontsize=10, style='italic')
 
     plt.tight_layout()
