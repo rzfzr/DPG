@@ -448,7 +448,7 @@ def plot_dpg_constraints_overview(
             sample_val = original_sample[feat]
             # Draw as a prominent marker
             ax.scatter([sample_val], [y], color='black', s=150, marker='o',
-                      zorder=10, edgecolors='white', linewidths=2)
+                      zorder=10, edgecolors='black', linewidths=2)
             ax.plot([sample_val, sample_val], [y - 0.4, y + 0.4],
                    color='black', linewidth=2, linestyle='-', zorder=9, alpha=0.7)
             ax.text(sample_val, y + 0.42, f'{sample_val:.2f}',
@@ -491,7 +491,7 @@ def plot_dpg_constraints_overview(
     if original_sample:
         legend_elements.append(
             Line2D([0], [0], marker='o', color='w', markerfacecolor='black',
-                   markeredgecolor='white', markersize=10, label='Original Sample')
+                   markeredgecolor='black', markersize=10, label='Original Sample')
         )
 
     if non_overlapping_features:
