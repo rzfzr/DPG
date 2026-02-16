@@ -1365,14 +1365,25 @@ def class_lookup_from_target_names(target_names: Optional[List[str]]) -> Dict[st
 
 
 def _class_mask(class_name: str, y, class_lookup: Optional[Dict[str, int]] = None):
+    y_arr = np.asarray(y)
+
+    # First try direct label matching; this supports string labels (e.g., "F1")
+    # even when a class_lookup mapping is provided.
+    direct_mask = pd.Series(y_arr).astype(str).values == str(class_name)
+    if np.any(direct_mask):
+        return direct_mask
+
+    # Fallback to lookup mapping (e.g., class name -> integer id).
     if class_lookup and str(class_name) in class_lookup:
-        return y == class_lookup[str(class_name)]
+        mapped_mask = y_arr == class_lookup[str(class_name)]
+        if np.any(mapped_mask):
+            return mapped_mask
     try:
         as_int = int(class_name)
-        return y == as_int
+        return y_arr == as_int
     except Exception:
         pass
-    return pd.Series(y).astype(str).values == str(class_name)
+    return direct_mask
 
 
 def dataset_feature_bounds_by_class(
