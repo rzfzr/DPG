@@ -1008,10 +1008,25 @@ def plot_top_lrc_predicate_splits(
 
     split_rows = top_pred[top_pred["feature"].isin([fx, fy])].copy()
     fig, ax = plt.subplots(figsize=(8, 6))
+
+    y_series = pd.Series(np.asarray(y))
+    y_numeric = pd.to_numeric(y_series, errors="coerce")
+    colorbar_label = "Class id"
+    colorbar_ticks = None
+    colorbar_ticklabels = None
+    if y_numeric.notna().all():
+        color_values = y_numeric.to_numpy()
+    else:
+        # Support string/categorical class labels (e.g., "F1", "F2") in scatter coloring.
+        color_values, unique_labels = pd.factorize(y_series.astype(str), sort=True)
+        colorbar_label = "Class"
+        colorbar_ticks = np.arange(len(unique_labels))
+        colorbar_ticklabels = [str(label) for label in unique_labels]
+
     scatter = ax.scatter(
         X_df[fx],
         X_df[fy],
-        c=y,
+        c=color_values,
         cmap="viridis",
         s=36,
         alpha=0.75,
@@ -1053,7 +1068,10 @@ def plot_top_lrc_predicate_splits(
     ax.set_xlabel(fx)
     ax.set_ylabel(fy)
     cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label("Class id")
+    cbar.set_label(colorbar_label)
+    if colorbar_ticks is not None and colorbar_ticklabels is not None:
+        cbar.set_ticks(colorbar_ticks)
+        cbar.set_ticklabels(colorbar_ticklabels)
 
     handles, labels = ax.get_legend_handles_labels()
     if handles:
